@@ -52,9 +52,12 @@ class Address(models.Model) :
 
 class Customer(models.Model):
     name = models.CharField(max_length=50) 
+    username = models.CharField(max_length=50)
     addres = models.ForeignKey(Address, on_delete=models.CASCADE,null=True, blank=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, blank=True,null=True)
     wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE, blank=True,null=True)
+    email_verification = models.BooleanField(default=False)
+    email_verification_key = models.CharField(max_length=32)
     
     def __str__(self) :
         return self.name

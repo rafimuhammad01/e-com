@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Customer
+from django.utils.crypto import get_random_string
+import string
+
 
 
 class RegisterForm(UserCreationForm) :
@@ -22,7 +25,7 @@ class RegisterForm(UserCreationForm) :
         user.first_name = name[0]
         if len(name) == 2 :
             user.last_name = name[1]
-        cust = Customer.objects.create(name=self.cleaned_data['name'])
+        cust = Customer.objects.create(username=self.cleaned_data['username'], name=self.cleaned_data['name'], email_verification_key=get_random_string(32, allowed_chars=string.ascii_uppercase + string.digits))
 
 
         if commit:
