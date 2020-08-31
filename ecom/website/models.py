@@ -21,12 +21,12 @@ class Tag(models.Model) :
 class Product(models.Model) :
     name = models.CharField(max_length=50)
     price = models.FloatField(max_length=50)
+    popular = models.BooleanField()
     tags = models.ManyToManyField(Tag)
     
 
     def __str__ (self) :
         return self.name
-
 
 
 class Cart(models.Model) :
