@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.conf import settings
 from django.core.mail import send_mail
@@ -15,8 +15,16 @@ from .models import Customer
 def landing_page(request) :
     return HttpResponse("this is landing page")
 
+
 def loginPage(request) :
-    return render(request,'website/login.html')
+    if request.method == 'POST' :
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            return redirect('landing_page')
+    else :
+        form = AuthenticationForm()
+    context = {'form' : form}
+    return render(request,'website/login.html', context)
 
 def registerPage(request) :
     form = RegisterForm()

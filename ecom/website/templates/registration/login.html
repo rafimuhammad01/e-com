@@ -1,0 +1,13 @@
+<html>
+    <head>
+        <title>login page</title>
+    </head>
+    <body>
+        <h1>this is login page</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type='submit'>Login</button>
+        </form>
+    </body>
+</html>

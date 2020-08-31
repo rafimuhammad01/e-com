@@ -129,3 +129,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'ecom.web123@gmail.com'
 EMAIL_HOST_PASSWORD = 'DjangoWebsite123'
 EMAIL_PORT = 587
+
+#Registration 
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
