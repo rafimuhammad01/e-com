@@ -1,3 +1,2 @@
-/myenv/
-/ecom/secret.py
-.vscode
+\ecom\secret.py
+\myenv
