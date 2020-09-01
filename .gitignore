@@ -1,2 +1,4 @@
 myenv
-./ecom/ecom/secret.py
+ecom/ecom/secret.py
+ecom/website/__pycache__
+ecom/ecom/__pycache__
