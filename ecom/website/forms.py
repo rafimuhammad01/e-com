@@ -32,4 +32,5 @@ class RegisterForm(UserCreationForm) :
             user.save()
             cust.save()
 
-
+class SearchBar(forms.Form) :
+    search = forms.CharField(max_length=200)

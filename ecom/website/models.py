@@ -1,9 +1,18 @@
 from django.db import models
 
 # Create your models here.
+
+class Tag(models.Model) :
+    name = models.CharField(max_length=50)
+    popular = models.BooleanField(default=False)
+
+    def __str__(self) :
+        return self.name
+
 class Review (models.Model) :
     review = models.TextField(max_length=200)
-    rate = models.CharField(max_length = 1, choices=[
+    rate = models.CharField(default="0", max_length = 1, choices=[
+        ('0','0'),
         ("1", "1"),
         ("2", "2"),
         ("3", "3"),
@@ -11,19 +20,12 @@ class Review (models.Model) :
         ("5", "5") 
     ])
 
-class Tag(models.Model) :
-    name = models.CharField(max_length=50)
-
-    def __str__(self) :
-        return self.name
-
-
 class Product(models.Model) :
     name = models.CharField(max_length=50)
-    price = models.FloatField(max_length=50)
-    popular = models.BooleanField()
+    price = models.FloatField(max_length=50, default=0)
     tags = models.ManyToManyField(Tag)
-    
+    review = models.ManyToManyField(Review,null=True, blank=True )
+    image = models.ImageField(default='image/default.png', upload_to='image')
 
     def __str__ (self) :
         return self.name
@@ -32,14 +34,8 @@ class Product(models.Model) :
 class Cart(models.Model) :
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
-    def __str__(self) :
-        return "Cart by " + str(self.user)
-
 class Wishlist(models.Model) :
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-    def __str__(self) :
-        return "Wishlist by " + str(self.user)
 
 class Address(models.Model) :
     jalan = models.CharField(max_length=50)
@@ -48,7 +44,7 @@ class Address(models.Model) :
     zipcode = models.CharField(max_length=50)
 
     def __str__(self) :
-        return str(self.user) + " - " + self.zipcode
+        return str(self.jalan) + " - " + self.zipcode
 
 class Customer(models.Model):
     name = models.CharField(max_length=50) 

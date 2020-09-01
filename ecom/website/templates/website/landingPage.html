@@ -1,0 +1,25 @@
+{% extends 'website/base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %} 
+    <div id='popular product'>
+        <h1>popular product</h1>
+        {% for tag in popularTag %}
+            <h2>{{tag}}</h2>
+        {% endfor %}
+    </div>
+
+    <br>
+    <div id = 'for you'>
+        <h1>for you</h1>
+        {% for product in products %}
+            <img src="{{ product.image.url }}">
+            <h2>{{ product.name }} </h2>
+            <h3>IDR {{ product.price }}</h3>
+            <br>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

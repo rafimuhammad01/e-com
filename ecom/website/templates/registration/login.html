@@ -3,11 +3,15 @@
         <title>login page</title>
     </head>
     <body>
-        <h1>this is login page</h1>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type='submit'>Login</button>
-        </form>
+        {% if user.is_authenticated %}
+            <h1>you already login, <a href={% url 'landingPage' %}>clik here</a> to get back to home</h1>
+        {% else %}
+            <h1>this is login page</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type='submit'>Login</button>
+            </form>
+        {% endif %}
     </body>
 </html>
