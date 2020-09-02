@@ -8,28 +8,72 @@ from django.contrib.auth import authenticate, login
 from .forms import RegisterForm, SearchBar
 from django.contrib.auth.models import User
 from .models import Customer, Product, Tag
+from .filters import ProductFilter, ProductSearch
+from django.db.models import Q
 
 
 # Function
-
-
-
-
-# Create your views here.
-
-
-def productPage(request, search) :
-    search.split(" ")
-    return HttpResponse('Product Page')
-
-
-def landingPage(request) :
-    form = SearchBar()
+def searchfunction(request, form) :
     if request.GET :
         form = SearchBar(request.GET)
         if form.is_valid() :
             search = form.cleaned_data['search']
-            return redirect(productPage, search)
+            return search.replace('/',' ')
+    return None
+
+def searchbar(search) :
+    search_lst = search.split(" ")
+    product_set = []
+    
+    for i in search_lst :
+        products = Product.objects.filter(
+            Q(name__icontains=i) |
+            Q(tags__name__icontains=i)
+        ).distinct()
+
+        for product in products :
+            product_set.append(product)
+    
+    return list(set(product_set))
+
+
+# Create your views here.
+
+def productPageAll(request) :
+    f = ProductFilter(request.GET, queryset=Product.objects.all())
+    form = SearchBar()
+    search_res = searchfunction(request, form)
+    if search_res :
+        return redirect(productPage, search_res)
+
+    context = {
+        'form' : form,
+        'products' : f.qs & Product.objects.all(),
+        'filters' : f
+    }
+    return render(request, 'website/productPage.html', context)
+
+def productPage(request, search) :
+    f = ProductFilter(request.GET, queryset=Product.objects.all())
+    form = SearchBar()
+    search_res = searchfunction(request, form)
+    if search_res :
+        return redirect(productPage, search_res)
+
+    filter_qs = [i for i in f.qs]
+    products = searchbar(search)
+    context = {
+        'form' : form,
+        'products' : set(products) & set(filter_qs),
+        'filters' : f
+    }
+    return render(request, 'website/productPage.html', context)
+
+def landingPage(request) :
+    form = SearchBar()
+    search_res = searchfunction(request, form)
+    if search_res :
+        return redirect(productPage, search_res)
 
     popularTag = Tag.objects.filter(popular=True)
     product = Product.objects.all()
@@ -40,7 +84,6 @@ def landingPage(request) :
         'products' : product
     }
     return render(request, 'website/landingPage.html', context)
-
 
 def registerPage(request) :
     if request.user.is_authenticated :
@@ -77,4 +120,8 @@ def confirmedEmail(request, name) :
         user.email_verification = True
         user.save()
     return redirect("emailVerification")
+
+def detailproduct(request, id) :
+    product = Product.objects.get(id=id) 
+    return HttpResponse("ini detail product " + product.name)
 

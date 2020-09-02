@@ -16,12 +16,16 @@
             <li><a href={% url 'registerPage' %}>Sign Up</a></li>
         {% endif %}   
         </ul>
-        <form action="" >
-            {% csrf_token %}
+
+        {% endblock %}
+
+        {% block searchbar %}
+        <form action="" method="GET" >
             {{ form }}
-            <button method='get'>Submit</button>
+            <button>Submit</button>
         </form>
         {% endblock %}
+        
     </div>
 
     <div id="content">
