@@ -30,7 +30,6 @@ class Review (models.Model) :
         (5, 5) 
     ])
     
-
     def __str__(self) :
         return "review" + " "+"(" + str(self.rate) + ")"
 

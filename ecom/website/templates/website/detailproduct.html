@@ -17,6 +17,7 @@
     <h1>review</h1>
     {% for i in product.review.all  %}
         <h3>{{i.review}}</h3>
+        <h4>review by {{i.customer}}</h4>
     {%endfor%}
 
 
