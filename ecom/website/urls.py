@@ -9,5 +9,7 @@ urlpatterns = [
     path('register/', views.registerPage, name='registerPage'),
     path('email-verification/', views.emailVerification, name='emailVerification'),  
     path('email-verification/<str:name>', views.confirmedEmail, name='confirmedEmail'),  
-    path('product/<str:search>', views.productPage, name='productPage')
+    path('product/<str:search>', views.productPage, name='productPage'),
+    path('product/', views.productPageAll, name='productPageAll'),
+    path('detail-product/<str:id>', views.detailproduct, name='detailproduct')
 ]

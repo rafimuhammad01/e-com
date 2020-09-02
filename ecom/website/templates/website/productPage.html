@@ -2,17 +2,18 @@
 
 {% block title %} Home {% endblock %}
 
-{% block content %} 
-    <div id='popular product'>
-        <h1>popular product</h1>
-        {% for tag in popularTag %}
-            <h2>{{tag}}</h2>
-        {% endfor %}
+{% block content %}
+    <div id='filter'>
+        <h1>filter</h1>
+        <form action="" method="GET" >
+            {{ filters.form }}
+        <button>Submit</button>
+    </form>
     </div>
+    
 
-    <br>
-    <div id = 'for you'>
-        <h1>for you</h1>
+    <div id = 'product'>
+        <h1>product</h1>
         {% for product in products %}
             <img src="{{ product.image.url }}">
             <h1><a href="{% url 'detailproduct' product.id %}">{{ product.name }} </a></h1>
