@@ -2,3 +2,4 @@ myenv
 ecom/ecom/secret.py
 ecom/website/__pycache__
 ecom/ecom/__pycache__
+ecom/ecom/email.py

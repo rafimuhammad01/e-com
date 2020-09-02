@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 from .secret import *
+from .email import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -128,12 +129,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
 #EMAIL Verification
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'ecom.web123@gmail.com'
-EMAIL_HOST_PASSWORD = 'DjangoWebsite123'
-EMAIL_PORT = 587
+EMAIL_BACKEND = EMAIL_BACKEND
+EMAIL_USE_TLS = EMAIL_USE_TLS
+EMAIL_HOST = EMAIL_HOST
+EMAIL_HOST_USER = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+EMAIL_PORT = EMAIL_PORT
 
 #Registration 
 
