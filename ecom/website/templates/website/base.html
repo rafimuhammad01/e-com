@@ -27,6 +27,15 @@
         <br>
         {% endblock %}
         
+        {% block filterbar %}
+            <h1>filter</h1>
+            <form action="" method="GET" >
+                {{ filters.form }}
+            <button>Submit</button>
+        </form>
+        <br>
+        {% endblock %}
+
     </div>
 
     <div id="content">

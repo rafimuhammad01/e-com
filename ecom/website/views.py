@@ -37,6 +37,7 @@ def searchbar(search) :
     return list(set(product_set))
 
 
+
 # Create your views here.
 
 def productPageAll(request) :
@@ -122,6 +123,25 @@ def confirmedEmail(request, name) :
     return redirect("emailVerification")
 
 def detailproduct(request, id) :
+    form = SearchBar()
+    search_res = searchfunction(request, form)
+    if search_res :
+        return redirect(productPage, search_res)
+
+
+    #round(number * 2) / 2
+    rate = 0
     product = Product.objects.get(id=id) 
-    return HttpResponse("ini detail product " + product.name)
+    for i in product.review.all() :
+        rate += i.rate
+
+    rate = round(rate/len(product.review.all()) * 2) /2
+    product.rate = rate
+        
+    
+    context = {
+        'product' : product,
+        'form' : form
+    }
+    return render(request, 'website/detailproduct.html', context)
 

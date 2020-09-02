@@ -9,33 +9,6 @@ class Tag(models.Model) :
     def __str__(self) :
         return self.name
 
-class Review (models.Model) :
-    review = models.TextField(max_length=200)
-    rate = models.CharField(default="0", max_length = 1, choices=[
-        ('0','0'),
-        ("1", "1"),
-        ("2", "2"),
-        ("3", "3"),
-        ("4", "4"),
-        ("5", "5") 
-    ])
-
-class Product(models.Model) :
-    name = models.CharField(max_length=50)
-    price = models.FloatField(max_length=50, default=0)
-    tags = models.ManyToManyField(Tag)
-    review = models.ManyToManyField(Review,null=True, blank=True )
-    image = models.ImageField(default='image/default.png', upload_to='image')
-
-    def __str__ (self) :
-        return self.name
-
-
-class Cart(models.Model) :
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-class Wishlist(models.Model) :
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 class Address(models.Model) :
     jalan = models.CharField(max_length=50)
@@ -45,6 +18,39 @@ class Address(models.Model) :
 
     def __str__(self) :
         return str(self.jalan) + " - " + self.zipcode
+
+class Review (models.Model) :
+    customer = models.ForeignKey("Customer", on_delete=models.CASCADE)
+    review = models.TextField(max_length=200)
+    rate = models.IntegerField(null=True, blank=True, max_length = 1, choices=[
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5) 
+    ])
+    
+
+    def __str__(self) :
+        return "review" + " "+"(" + str(self.rate) + ")"
+
+class Product(models.Model) :
+    name = models.CharField(max_length=50)
+    price = models.FloatField(max_length=50, default=0)
+    description = models.TextField(max_length=200)
+    tags = models.ManyToManyField(Tag)
+    rate = models.FloatField(blank=True, null=True, max_length=1)
+    review = models.ManyToManyField(Review, null=True, blank=True)
+    image = models.ImageField(default='image/default.png', upload_to='image')
+
+    def __str__ (self) :
+        return "{} ({})".format(self.name, self.price)
+
+class Cart(models.Model) :
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+class Wishlist(models.Model) :
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 class Customer(models.Model):
     name = models.CharField(max_length=50) 
@@ -66,6 +72,12 @@ class Order(models.Model) :
 
     def __str__(self) :
         return self.order_id
+
+
+
+
+
+
 
 
 

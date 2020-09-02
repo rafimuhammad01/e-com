@@ -1,0 +1,23 @@
+{% extends 'website/base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block filterbar%}{%endblock%}
+
+{% block content %}
+
+    <img src="{{ product.image.url }}">
+    <h1><a href="{% url 'detailproduct' product.id %}">{{ product.name }} </a></h1>
+    <h3>{{product.rate}}</h3>
+    <h3>price : IDR {{ product.price }}</h3>
+    <br>
+    <h1>description</h1>
+    <h3>{{product.description}}</h3>
+    <br>
+    <h1>review</h1>
+    {% for i in product.review.all  %}
+        <h3>{{i.review}}</h3>
+    {%endfor%}
+
+
+{% endblock %}

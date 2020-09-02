@@ -3,15 +3,6 @@
 {% block title %} Home {% endblock %}
 
 {% block content %}
-    <div id='filter'>
-        <h1>filter</h1>
-        <form action="" method="GET" >
-            {{ filters.form }}
-        <button>Submit</button>
-    </form>
-    </div>
-    
-
     <div id = 'product'>
         <h1>product</h1>
         {% for product in products %}
