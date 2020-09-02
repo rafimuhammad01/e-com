@@ -2,15 +2,15 @@
 
 {% block title %} Home {% endblock %}
 
-{% block searchbar %}
-    <form action="" method="GET" >
-        {{form}}
-        {{ filters.form }}
+{% block content %}
+    <div id='filter'>
+        <h1>filter</h1>
+        <form action="" method="GET" >
+            {{ filters.form }}
         <button>Submit</button>
     </form>
-{% endblock %}
-
-{% block content %}
+    </div>
+    
 
     <div id = 'product'>
         <h1>product</h1>
