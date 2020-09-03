@@ -123,13 +123,14 @@ def confirmedEmail(request, name) :
     return redirect("emailVerification")
 
 def detailproduct(request, id) :
+    #Search Bar
     form = SearchBar()
     search_res = searchfunction(request, form)
     if search_res :
         return redirect(productPage, search_res)
 
 
-    #round(number * 2) / 2
+    #Rate Function
     rate = 0
     product = Product.objects.get(id=id) 
     for i in product.review.all() :
@@ -141,7 +142,26 @@ def detailproduct(request, id) :
     
     context = {
         'product' : product,
-        'form' : form
+        'form' : form,
+        'added_cart' : False,
+        'added_wishlist' : False
     }
+
+    
+    #Add to cart Function
+    if request.GET.get('add_to_cart') :
+        if request.user.is_authenticated :
+            cust = Customer.objects.get(username=request.user.username)
+            cust.cart.add(Product.objects.get(id=id))
+            context['added_cart'] = True
+
+    #Add to wishlist function 
+    if request.GET.get('add_to_wishlist') :
+        if request.user.is_authenticated :
+            cust = Customer.objects.get(username=request.user.username)
+            cust.wishlist.add(Product.objects.get(id=id))
+            context['added_wishlist'] = True
+
+
     return render(request, 'website/detailproduct.html', context)
 

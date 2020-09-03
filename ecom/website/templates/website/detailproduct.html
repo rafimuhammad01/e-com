@@ -7,9 +7,23 @@
 {% block content %}
 
     <img src="{{ product.image.url }}">
-    <h1><a href="{% url 'detailproduct' product.id %}">{{ product.name }} </a></h1>
+    <h1>{{ product.name }} </a></h1>
     <h3>{{product.rate}}</h3>
     <h3>price : IDR {{ product.price }}</h3>
+    <br>
+    {% if added_wishlist %}
+        <h2>Added to wishlist Successfully</h2>
+    {% endif %}
+    <form action="#" method="get">
+        <input type="submit" class="btn" value="Add to Wishlist" name="add_to_wishlist">
+    </form>
+    <br>
+    {% if added_cart %}
+        <h2>Added to cart Successfully</h2>
+    {% endif %}
+    <form action="#" method="get">
+        <input type="submit" class="btn" value="Add to Cart" name="add_to_cart">
+    </form>
     <br>
     <h1>description</h1>
     <h3>{{product.description}}</h3>
