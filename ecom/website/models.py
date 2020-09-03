@@ -1,5 +1,7 @@
 from django.db import models
-import datetime
+from django.utils.timezone import now
+from django.utils.crypto import get_random_string
+import string
 
 # Create your models here.
 
@@ -59,11 +61,18 @@ class Customer(models.Model):
         return self.name
 
 class Order(models.Model) :
-    order_id = models.CharField(max_length=50, primary_key=True)
-    user = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    order_id = models.CharField(max_length=50, primary_key=True, default=get_random_string(8, allowed_chars=string.ascii_uppercase + string.digits))
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     cart = models.ManyToManyField(Product)
     totalPrice = models.FloatField(max_length=50)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=now)
+    status = models.CharField(max_length=64,default='waiting_for_payment', choices=[
+        ('waiting_for_payment', 'Waiting for Payment'),
+        ('verified', 'Verified'),
+        ("on_shipping", 'On Shipping'),
+        ("arrived", 'Arrived'),
+        ('finish', 'Finish') 
+    ])
 
     def __str__(self) :
         return self.order_id

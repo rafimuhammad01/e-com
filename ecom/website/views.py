@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login
 from .forms import RegisterForm, SearchBar
 from django.contrib.auth.models import User
-from .models import Customer, Product, Tag
+from .models import Customer, Product, Tag, Order
 from .filters import ProductFilter, ProductSearch
 from django.db.models import Q
 
@@ -144,7 +144,7 @@ def detailproduct(request, id) :
         'product' : product,
         'form' : form,
         'added_cart' : False,
-        'added_wishlist' : False
+        'added_wishlist' : False,
     }
 
     
@@ -162,6 +162,23 @@ def detailproduct(request, id) :
             cust.wishlist.add(Product.objects.get(id=id))
             context['added_wishlist'] = True
 
+    #Buy Now Function
+    if request.GET.get('buy_now') :
+        if request.user.is_authenticated :
+            cust = Customer.objects.get(username=request.user.username)
+            product = Product.objects.get(id=id)
+            order = Order.objects.filter(customer=cust, cart__in=[product])
+            if order :
+                order = order[0]
+            else :
+                order = Order(customer=cust, totalPrice=product.price)
+                order.save()
+                order.cart.add(product)
+            return redirect('checkout', order.order_id)
 
     return render(request, 'website/detailproduct.html', context)
+
+
+def checkout(request, id) :
+    return HttpResponse('ini checkout')
 

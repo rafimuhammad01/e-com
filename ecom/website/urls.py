@@ -11,5 +11,6 @@ urlpatterns = [
     path('email-verification/<str:name>', views.confirmedEmail, name='confirmedEmail'),  
     path('product/<str:search>', views.productPage, name='productPage'),
     path('product/', views.productPageAll, name='productPageAll'),
-    path('detail-product/<str:id>', views.detailproduct, name='detailproduct')
+    path('detail-product/<str:id>', views.detailproduct, name='detailproduct'),
+    path('checkout/<str:id>', views.checkout, name='checkout')
 ]
