@@ -12,5 +12,7 @@ urlpatterns = [
     path('product/<str:search>', views.productPage, name='productPage'),
     path('product/', views.productPageAll, name='productPageAll'),
     path('detail-product/<str:id>', views.detailproduct, name='detailproduct'),
-    path('checkout/<str:id>', views.checkout, name='checkout')
+    path('checkout/<str:id>', views.checkout, name='checkout'),
+    path('cart/', views.cartPage, name='cartPage'),
+    path('wishlist/', views.wishlistPage, name='wishlistPage')
 ]

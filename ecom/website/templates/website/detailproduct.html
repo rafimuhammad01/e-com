@@ -5,28 +5,31 @@
 {% block filterbar%}{%endblock%}
 
 {% block content %}
+    <form action="#" method="get">
+        <input type="submit" class="btn" value="Cart" name="cart">
+    </form>
+
+    <form action="#" method="get">
+        <input type="submit" class="btn" value="Wishlist" name="wishlist">
+    </form>
 
     <img src="{{ product.image.url }}">
     <h1>{{ product.name }} </a></h1>
     <h3>{{product.rate}}</h3>
     <h3>price : IDR {{ product.price }}</h3>
-    <br>
     {% if added_wishlist %}
         <h2>Added to wishlist Successfully</h2>
     {% endif %}
-    <form action="#" method="get">
-        <input type="submit" class="btn" value="Add to Wishlist" name="add_to_wishlist">
-    </form>
-    <br>
+    
     {% if added_cart %}
         <h2>Added to cart Successfully</h2>
     {% endif %}
+    <br>
     <form action="#" method="get">
+        <label for="qty">quantity:</label><br>
+        <input type="number" value=1 name='qty' > <br>
         <input type="submit" class="btn" value="Add to Cart" name="add_to_cart">
-    </form>
-    <br>
-    <br>
-    <form action="#" method="get">
+        <input type="submit" class="btn" value="Add to Wishlist" name="add_to_wishlist">
         <input type="submit" class="btn" value="Buy Now" name="buy_now">
     </form>
     <br>

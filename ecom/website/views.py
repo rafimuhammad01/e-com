@@ -7,10 +7,9 @@ from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login
 from .forms import RegisterForm, SearchBar
 from django.contrib.auth.models import User
-from .models import Customer, Product, Tag, Order
+from .models import Customer, Product, Tag, Order, ProductOrder
 from .filters import ProductFilter, ProductSearch
 from django.db.models import Q
-
 
 # Function
 def searchfunction(request, form) :
@@ -71,6 +70,12 @@ def productPage(request, search) :
     return render(request, 'website/productPage.html', context)
 
 def landingPage(request) :
+    #Deleting ProductOrder Instance if doesn't have related name
+
+
+
+
+    #Searchbar form
     form = SearchBar()
     search_res = searchfunction(request, form)
     if search_res :
@@ -136,8 +141,11 @@ def detailproduct(request, id) :
     for i in product.review.all() :
         rate += i.rate
 
-    rate = round(rate/len(product.review.all()) * 2) /2
-    product.rate = rate
+    if rate == 0 :
+        product.rate = rate
+    else :
+        rate = round(rate/len(product.review.all()) * 2) /2
+        product.rate = rate
         
     
     context = {
@@ -147,13 +155,44 @@ def detailproduct(request, id) :
         'added_wishlist' : False,
     }
 
+    #Cart function
+    if request.GET.get('cart') :
+        if request.user.is_authenticated :
+            return redirect('cartPage')
+        else :
+            return redirect('login')
     
+    #Wishlist function
+    if request.GET.get('wishlist') :
+        if request.user.is_authenticated :
+            return redirect('wishlistPage')
+        else :
+            return redirect('login')
+
     #Add to cart Function
     if request.GET.get('add_to_cart') :
         if request.user.is_authenticated :
+            qty = request.GET.get('qty')
             cust = Customer.objects.get(username=request.user.username)
-            cust.cart.add(Product.objects.get(id=id))
-            context['added_cart'] = True
+
+
+            cart_id = ''
+
+            for i in cust.cart.all() :
+                if i.product.id == int(id) :
+                    cart_id = i
+
+            if cart_id != "" :
+                cart_id.qty += int(qty)
+                cart_id.save()
+                context['added_cart'] = True
+            else : 
+                productOrder = ProductOrder(product=Product.objects.get(id=id), qty=qty, price=Product.objects.get(id=id).price*float(qty))
+                productOrder.save()
+                cust.cart.add(productOrder)
+                context['added_cart'] = True
+        else :
+            return redirect('login')
 
     #Add to wishlist function 
     if request.GET.get('add_to_wishlist') :
@@ -161,24 +200,38 @@ def detailproduct(request, id) :
             cust = Customer.objects.get(username=request.user.username)
             cust.wishlist.add(Product.objects.get(id=id))
             context['added_wishlist'] = True
+        else :
+            return redirect('login')
 
     #Buy Now Function
+    '''
     if request.GET.get('buy_now') :
         if request.user.is_authenticated :
+            qty = request.GET.get('qty')
             cust = Customer.objects.get(username=request.user.username)
             product = Product.objects.get(id=id)
-            order = Order.objects.filter(customer=cust, cart__in=[product])
+
             if order :
                 order = order[0]
             else :
-                order = Order(customer=cust, totalPrice=product.price)
+                cart = Cart(product=product,qty=qty,price=product.price*float(qty))
+                cart.save()
+                order = Order(customer=cust, totalPrice=cart.price)
                 order.save()
-                order.cart.add(product)
+                order.cart.add(cart)
             return redirect('checkout', order.order_id)
+        else :
+            return redirect('login') '''
 
     return render(request, 'website/detailproduct.html', context)
 
 
 def checkout(request, id) :
     return HttpResponse('ini checkout')
+
+def cartPage(requset) :
+    return HttpResponse('ini cart page')
+
+def wishlistPage(requset) :
+    return HttpResponse('ini wishlist page')
 

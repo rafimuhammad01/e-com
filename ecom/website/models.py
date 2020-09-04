@@ -52,7 +52,7 @@ class Customer(models.Model):
     name = models.CharField(max_length=50) 
     username = models.CharField(max_length=50)
     addres = models.ForeignKey(Address, on_delete=models.CASCADE,null=True, blank=True)
-    cart = models.ManyToManyField(Product, blank=True, related_name='customer_cart')
+    cart = models.ManyToManyField('ProductOrder', blank=True, null=True, related_name='customer_cart')
     wishlist = models.ManyToManyField(Product, blank=True, related_name='customer_wishlist') 
     email_verification = models.BooleanField(default=False)
     email_verification_key = models.CharField(max_length=32)
@@ -60,10 +60,20 @@ class Customer(models.Model):
     def __str__(self) :
         return self.name
 
+
+class ProductOrder(models.Model) :
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    qty = models.IntegerField(default=1)
+    price= models.FloatField(default=0)
+    def __str__ (self) :
+        return "{}, {}, ({})".format(self.product,self.qty, self.price)
+
+    
+
 class Order(models.Model) :
     order_id = models.CharField(max_length=50, primary_key=True, default=get_random_string(8, allowed_chars=string.ascii_uppercase + string.digits))
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    cart = models.ManyToManyField(Product)
+    product = models.ManyToManyField(ProductOrder) 
     totalPrice = models.FloatField(max_length=50)
     date = models.DateTimeField(default=now)
     status = models.CharField(max_length=64,default='waiting_for_payment', choices=[
