@@ -76,7 +76,8 @@ class Order(models.Model) :
     product = models.ManyToManyField(ProductOrder) 
     totalPrice = models.FloatField(max_length=50)
     date = models.DateTimeField(default=now)
-    status = models.CharField(max_length=64,default='waiting_for_payment', choices=[
+    status = models.CharField(max_length=64,default='waiting_to_approve', choices=[
+        ('waiting_to_approve', 'Waiting to Approve'),
         ('waiting_for_payment', 'Waiting for Payment'),
         ('verified', 'Verified'),
         ("on_shipping", 'On Shipping'),

@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from .models import Customer, Product, Tag, Order, ProductOrder
 from .filters import ProductFilter, ProductSearch
 from django.db.models import Q
+from django.utils.crypto import get_random_string
+import string
 
 # Function
 def searchfunction(request, form) :
@@ -70,11 +72,6 @@ def productPage(request, search) :
     return render(request, 'website/productPage.html', context)
 
 def landingPage(request) :
-    #Deleting ProductOrder Instance if doesn't have related name
-
-
-
-
     #Searchbar form
     form = SearchBar()
     search_res = searchfunction(request, form)
@@ -143,6 +140,7 @@ def detailproduct(request, id) :
 
     if rate == 0 :
         product.rate = rate
+
     else :
         rate = round(rate/len(product.review.all()) * 2) /2
         product.rate = rate
@@ -204,34 +202,70 @@ def detailproduct(request, id) :
             return redirect('login')
 
     #Buy Now Function
-    '''
     if request.GET.get('buy_now') :
         if request.user.is_authenticated :
             qty = request.GET.get('qty')
             cust = Customer.objects.get(username=request.user.username)
             product = Product.objects.get(id=id)
-
-            if order :
-                order = order[0]
-            else :
-                cart = Cart(product=product,qty=qty,price=product.price*float(qty))
-                cart.save()
-                order = Order(customer=cust, totalPrice=cart.price)
+            order = None
+            productOrder = ProductOrder.objects.filter(product=product, qty=qty, price=product.price*float(qty))
+            if productOrder :
+                productOrder = productOrder[0]
+                order = Order(order_id=get_random_string(8, allowed_chars=string.ascii_uppercase + string.digits), customer=cust, totalPrice=productOrder.price)
                 order.save()
-                order.cart.add(cart)
-            return redirect('checkout', order.order_id)
+                order.product.add(productOrder)
+                return redirect('checkout', order.order_id)
+            else :
+                productOrder = ProductOrder(product=product, qty=qty, price=product.price*float(qty))
+                productOrder.save()
+                order = Order(order_id=get_random_string(8, allowed_chars=string.ascii_uppercase + string.digits),customer=cust, totalPrice=productOrder.price)
+                order.save()
+                order.product.add(productOrder)
+                return redirect('checkout', order.order_id)
         else :
-            return redirect('login') '''
-
+            return redirect('login')
     return render(request, 'website/detailproduct.html', context)
 
 
 def checkout(request, id) :
-    return HttpResponse('ini checkout')
+    #Search Bar
+    form = SearchBar()
+    search_res = searchfunction(request, form)
+    if search_res :
+        return redirect(productPage, search_res)
+    
+    order = Order.objects.get(order_id=id)
+
+    #Delete Button
+    if request.POST.get('delete') :
+        productOrder_id_list = request.POST.getlist('checkbox')
+        for productOrder_id in productOrder_id_list :
+            order.product.remove(ProductOrder.objects.get(id=productOrder_id))
+    #Buy Now Button
+    if request.POST.get('buynow') :
+        order.status = 'waiting_for_payment'
+        order.save()
+        return redirect('paymentPage', order.order_id)
+
+    #Cancel or Delete All
+    if not order.product.all().exists() or request.POST.get('cancel'):
+        order.delete()
+        return redirect('landingPage')
+
+    context = {
+        'form' : form,
+        'order' : order,
+        'product' : order.product.all()
+    }
+    return render(request, 'website/checkout.html', context)
 
 def cartPage(requset) :
     return HttpResponse('ini cart page')
 
 def wishlistPage(requset) :
     return HttpResponse('ini wishlist page')
+
+def paymentPage(request, id) :
+    order = Order.objects.get(order_id=id)
+    return HttpResponse('payment')
 

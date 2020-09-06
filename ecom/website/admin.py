@@ -5,7 +5,7 @@ from .models import *
 
 
 class CustomerAdmin(admin.ModelAdmin) :
-    filter_horizontal = ('cart',)
+    filter_horizontal = ('cart','wishlist')
 
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Product)

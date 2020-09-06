@@ -1,0 +1,28 @@
+{% extends 'website/base.html' %}
+
+{% block title %} Checkout {% endblock %}
+
+{% block filterbar%}{%endblock%}
+
+{% block content %}
+    <div id = 'product'>
+        <form action="", method='POST'>
+            {% csrf_token %}
+            <button type='submit' name='delete' value="Delete" >Delete</button>
+
+            <h1>Shopping Summary</h1>
+            <h1>total = {{ order.totalPrice }}</h1>
+
+            {% for product in order.product.all %}
+                <input type="checkbox" name="checkbox" value={{product.id}}>
+                <img src="{{ product.product.image.url }}">
+                <h1>{{ product.product.name }} </a></h1>
+                <input type="number" value='{{product.qty}}'>
+                <button type='submit' name='buynow' value="Buy Now">Buy Now</button>
+                <button type='submit' name='cancel' value="Cancel">Cancel</button>
+            {% endfor%}
+        </form>
+    </div>
+
+
+{% endblock %}
