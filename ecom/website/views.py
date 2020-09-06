@@ -226,46 +226,51 @@ def detailproduct(request, id) :
             return redirect('login')
     return render(request, 'website/detailproduct.html', context)
 
-
-def checkout(request, id) :
+def cartPage(request) :
     #Search Bar
     form = SearchBar()
     search_res = searchfunction(request, form)
     if search_res :
         return redirect(productPage, search_res)
     
-    order = Order.objects.get(order_id=id)
+    cust= Customer.objects.get(username=request.user.username)
+    price = 0
+    for i in cust.cart.all() :
+        price += i.price
 
     #Delete Button
     if request.POST.get('delete') :
         productOrder_id_list = request.POST.getlist('checkbox')
         for productOrder_id in productOrder_id_list :
-            order.product.remove(ProductOrder.objects.get(id=productOrder_id))
+            cust.cart.remove(ProductOrder.objects.get(id=productOrder_id))
+    
     #Buy Now Button
     if request.POST.get('buynow') :
-        order.status = 'waiting_for_payment'
+        order = Order(order_id=get_random_string(12, allowed_chars=string.ascii_uppercase + string.digits), customer=cust, totalPrice=price)
         order.save()
-        return redirect('paymentPage', order.order_id)
+        for productOrder in cust.cart.all() :
+            order.product.add(productOrder)
+        return redirect('checkout', order.order_id)
 
     #Cancel or Delete All
-    if not order.product.all().exists() or request.POST.get('cancel'):
-        order.delete()
+    if not cust.cart.all().exists() or request.POST.get('cancel'):
+        cust.cart.all().delete()
         return redirect('landingPage')
 
     context = {
         'form' : form,
-        'order' : order,
-        'product' : order.product.all()
+        'cust' : cust,
+        'price' : price
     }
-    return render(request, 'website/checkout.html', context)
+    return render(request, 'website/cartPage.html', context)
 
-def cartPage(requset) :
-    return HttpResponse('ini cart page')
+def checkout(requset, id) :
+    order = Order.objects.get(order_id=id)
+    order.status = 'waiting_for_payment'
+    order.save()
+    return HttpResponse('ini checkout page')
 
-def wishlistPage(requset) :
+def wishlistPage(request) :
     return HttpResponse('ini wishlist page')
 
-def paymentPage(request, id) :
-    order = Order.objects.get(order_id=id)
-    return HttpResponse('payment')
 
