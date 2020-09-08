@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import Customer
 from django.utils.crypto import get_random_string
 import string
+from django.forms import ModelForm
 
 
 
@@ -34,3 +35,9 @@ class RegisterForm(UserCreationForm) :
 
 class SearchBar(forms.Form) :
     search = forms.CharField(max_length=200)
+
+class EditProfile(ModelForm) :
+    class Meta :
+        model = Customer
+        fields = ['name']
+

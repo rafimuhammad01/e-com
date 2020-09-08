@@ -10,10 +10,16 @@
         <ul>
             <li><a href={% url 'landingPage' %}>Home</a></li>
         {% if user.is_authenticated %}
+            <li><a href={% url 'profilePage' 'user.username' %}>Profile</a></li>
             <li><a href={% url 'logout' %}>Logout</a></li>
+            <li><a href={% url 'cartPage' %}>Cart</a></li>
+            <li><a href={% url 'wishlistPage' %}>Wishlist</a></li>
+
+            
         {% else %}
             <li><a href={% url 'login' %}>Login</a></li>
             <li><a href={% url 'registerPage' %}>Sign Up</a></li>
+            
         {% endif %}   
         </ul>
 

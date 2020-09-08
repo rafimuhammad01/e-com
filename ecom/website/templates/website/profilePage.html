@@ -1,0 +1,36 @@
+{% extends 'website/base.html' %}
+
+{% block title %} Profile {% endblock %}
+
+{% block filterbar%}{%endblock%}
+
+{% block content %}
+    <h1>Profile</h1>
+    <div id='personalInfo'>
+        <h2>Personal info</h2>
+        {% if editProfile %}
+            <form action="#" method="post">
+                <input type="submit" class="btn" value="Confirm" name="confirm">
+                {% csrf_token %}
+                {{ editForm.as_p }}
+            </form>
+
+        {% else %}
+            <form action="#" method="get">
+                <input type="submit" class="btn" value="Edit" name="editProfile">
+            </form>
+            <h3>name : {{ cust.name }} </h3>
+            <h3>username : {{ cust.username}} </h3>
+            <h3>email : {{ cust.email}} </h3>
+        {% endif%}
+    </div>
+
+    <div id='Addres'>
+        <h2>Address</h2>
+        <form action="#" method="get">
+            <input type="submit" class="btn" value="+ Add Address" name="addAddress">
+        </form>
+
+    </div>
+    
+{% endblock %}

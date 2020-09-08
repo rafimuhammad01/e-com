@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login
-from .forms import RegisterForm, SearchBar
+from .forms import RegisterForm, SearchBar, EditProfile
 from django.contrib.auth.models import User
 from .models import Customer, Product, Tag, Order, ProductOrder
 from .filters import ProductFilter, ProductSearch
@@ -153,20 +153,6 @@ def detailproduct(request, id) :
         'added_wishlist' : False,
     }
 
-    #Cart function
-    if request.GET.get('cart') :
-        if request.user.is_authenticated :
-            return redirect('cartPage')
-        else :
-            return redirect('login')
-    
-    #Wishlist function
-    if request.GET.get('wishlist') :
-        if request.user.is_authenticated :
-            return redirect('wishlistPage')
-        else :
-            return redirect('login')
-
     #Add to cart Function
     if request.GET.get('add_to_cart') :
         if request.user.is_authenticated :
@@ -269,6 +255,35 @@ def checkout(requset, id) :
     order.status = 'waiting_for_payment'
     order.save()
     return HttpResponse('ini checkout page')
+
+def profilePage (request, username) :
+    #Search Bar
+    form = SearchBar()
+    search_res = searchfunction(request, form)
+    
+    if search_res :
+        return redirect(productPage, search_res)
+    
+    cust = Customer.objects.get(username=request.user.username)
+    editForm = EditProfile(instance=cust)
+    context = {
+        'cust' : cust,
+        'form' : form,
+        'editProfile' : False
+    }
+
+    if request.GET.get('editProfile') :
+        context['editProfile'] = True
+        context['editForm'] = editForm
+    
+    if request.method == 'POST' :
+        editForm = EditProfile(request.POST, instance=cust)
+        if editForm.is_valid():
+            editForm.save()
+            context['editProfile'] = False
+            return redirect('profilePage', cust.username)
+
+    return render(request, 'website/profilePage.html', context)
 
 def wishlistPage(request) :
     return HttpResponse('ini wishlist page')
